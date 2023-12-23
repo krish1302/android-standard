@@ -1,0 +1,141 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs")
+}
+
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+    arguments {
+        arg("dagger.fastInit", "ENABLED")
+        arg("kapt.kotlin.generated", "$projectDir/build/generated/source/kapt/kotlin")
+    }
+}
+
+android {
+    namespace 'com.example.test_dagger_kotlin'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.test_dagger_kotlin"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+}
+
+dependencies {
+
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.fragment.ktx
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+
+    //Testing - InstanceExecutorRule
+    testImplementation libs.androidx.core.testing
+    //StandardTestDispatcher
+    testImplementation libs.kotlinx.coroutines.test
+    //Mockk
+    testImplementation(libs.mockk)
+
+    //Dagger
+    implementation(libs.hilt.android)
+    kapt libs.hilt.android.compiler
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.gson.converter)
+    implementation(libs.okhttp)
+
+    //Coil
+    implementation(libs.coil.compose)
+
+    //Junit
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
+
+    //Mockito
+    testImplementation libs.mockito.kotlin
+    testImplementation libs.junit.jupiter.api.v581
+    testRuntimeOnly libs.junit.jupiter.engine.v581
+
+    testImplementation libs.mockito.core
+    testImplementation libs.mockito.junit.jupiter
+
+    //Coroutine
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.kotlinx.coroutines.test.v152
+
+
+    //Paging
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.runtime.ktx)
+
+    //Room Database
+    implementation(libs.androidx.room.runtime)
+    kapt libs.androidx.room.compiler
+
+    //Espresso
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
+
+    //Navigation Testing
+    androidTestImplementation(libs.androidx.navigation.testing)
+
+    //Fragment Testing
+    debugImplementation(libs.androidx.fragment.testing)
+
+}
+
+
+
